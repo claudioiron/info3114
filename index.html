@@ -24,8 +24,8 @@
 
             // http://gd2.mlb.com/components/game/mlb
 
-            // ajax synchornous xmlhttprequest to get jason
-            function getJasonSync(url) {
+            // AJAX Synchronous XMLHttpRequest to get JSON
+            function getJSONSync(url) {
                 var resp;
                 var xmlHttp;
                 resp = "";
@@ -38,23 +38,57 @@
                 return resp;
             }
 
-            function getBaseballDataSynch () {
+            function getBaseballDataSync() {
                 var year = "2017";
                 var month = "07";
-                var cya = "08";
-                var tempUrl = "http://gd2.mlb.com/components/game/mlb/year_" + year + "/month_" + month + "/day_" + day + "master_scoreboard.json";
+                var day = "08";
+                var tempUrl = "http://gd2.mlb.com/components/game/mlb/year_" + year + "/month_" + month + "/day_" + day + "/master_scoreboard.json";
                 // clear div innerHtml
                 document.getElementById("divGameInfo").innerHTML = "";
-                // Get json data from url
-                var baseballJSON = getJasonSync(tempUrl);
+                // Get JSON data from url
+                var baseballJSON = getJSONSync(tempUrl);
                 document.getElementById("divGameInfo").innerHTML = baseballJSON;
-                //parse data info object
-                var jsonObject = JSON.parse(baseballJSON);                
+                // parse data into object
+                var jsonObject = JSON.parse(baseballJSON);
+
+                var test1 = jsonObject.data.games.game[0];
+                var test2 = jsonObject["data"]["games"].game[0];
+                
+                console.log(jsonObject.data.games.game[0]);
+            }
+
+            function getJSONAsync(url, callback) {
+                var request = new XMLHttpRequest();
+                request.onreadystatechange = function() {
+                    if(request.readyState === 4 && request.status === 200){
+                        callback(request.responseText)
+                    }
+                };
+                request.open("GET", url);
+                request.send();
+            }
+
+            function myCallBack(baseballJSON) {
+                document.getElementById("divGameInfo").innerHTML = baseballJSON;
+                // parse data into Object
+                var jsonObject = JSON.parse(baseballJSON);
+            }
+
+            function getBaseballDataAsync() {
+                var year = "2017";
+                var month = "07";
+                var day = "08";
+                var tempUrl = "http://gd2.mlb.com/components/game/mlb/year_"
+                 + year + "/month_" + month + "/day_" + day + "/master_scoreboard.json";
+                document.getElementById("divGameInfo").innerHTML = "";
+                getJSONAsync(tempUrl, myCallBack)
             }
 
         </script>
     <body>
         <h3>Online session week 01</h3>
-        <input type="button" onclick="getBaseballDataSynch();" id="btnGetSync" value="Get Baseball Data Sync">
+        <input type="button" onclick="getBaseballDataSync();" id="btnGetSync" value="Get Baseball Data Sync">
+        <input type="button" onclick="getBaseballDataAsync();" id="btnGetASync" value="Get Baseball Data ASync">
+        <div id="divGameInfo"></div>
     </body>
 </html>
