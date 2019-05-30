@@ -2,10 +2,59 @@
     <head>
         <title>Online session week 01</title>
     </head>
-    <body>
-        <h2>Online session week 01</h2>
         <script>
-            console.log("online session week 01");
+            var myObject = 
+            {
+                firstName: "Joe",
+                lastName: "Howard",
+                nickName: "Curly",
+                weight: 220
+            }
+            console.log(myObject);
+            console.log(myObject["firstName"]);
+            
+            // convert person object into json string
+            var myObjectAsJsonString = JSON.stringify(myObject);
+            console.log(myObjectAsJsonString);
+            console.log(myObjectAsJsonString["firstName"]); // undefined
+
+            // parse json string into person object
+            var myJsonToObject = JSON.parse(myObjectAsJsonString);
+            console.log(myJsonToObject["firstName"]);
+
+            // http://gd2.mlb.com/components/game/mlb
+
+            // ajax synchornous xmlhttprequest to get jason
+            function getJasonSync(url) {
+                var resp;
+                var xmlHttp;
+                resp = "";
+                xmlHttp = new XMLHttpRequest();
+                if(xmlHttp !== null) {
+                    xmlHttp.open("GET", url, false);
+                    xmlHttp.send(null);
+                    resp = xmlHttp.responseText;
+                }
+                return resp;
+            }
+
+            function getBaseballDataSynch () {
+                var year = "2017";
+                var month = "07";
+                var cya = "08";
+                var tempUrl = "http://gd2.mlb.com/components/game/mlb/year_" + year + "/month_" + month + "/day_" + day + "master_scoreboard.json";
+                // clear div innerHtml
+                document.getElementById("divGameInfo").innerHTML = "";
+                // Get json data from url
+                var baseballJSON = getJasonSync(tempUrl);
+                document.getElementById("divGameInfo").innerHTML = baseballJSON;
+                //parse data info object
+                var jsonObject = JSON.parse(baseballJSON);                
+            }
+
         </script>
+    <body>
+        <h3>Online session week 01</h3>
+        <input type="button" onclick="getBaseballDataSynch();" id="btnGetSync" value="Get Baseball Data Sync">
     </body>
 </html>
